@@ -8,28 +8,28 @@ jest.mock('../api')
 test('Can fill out a form across multiple pages', async () => {
   mockSubmitForm.mockResolvedValueOnce({success: true})
   const testData = {food: 'test food', drink: 'test drink'}
-  const {getByLabelText, getByText, findByText} = render(<App />)
+  const {findByLabelText, findByText} = render(<App />)
 
-  fireEvent.click(getByText(/fill.*form/i))
+  fireEvent.click(await findByText(/fill.*form/i))
 
-  fireEvent.change(getByLabelText(/food/i), {
+  fireEvent.change(await findByLabelText(/food/i), {
     target: {value: testData.food},
   })
-  fireEvent.click(getByText(/next/i))
+  fireEvent.click(await findByText(/next/i))
 
-  fireEvent.change(getByLabelText(/drink/i), {
+  fireEvent.change(await findByLabelText(/drink/i), {
     target: {value: testData.drink},
   })
-  fireEvent.click(getByText(/review/i))
+  fireEvent.click(await findByText(/review/i))
 
-  expect(getByLabelText(/food/i)).toHaveTextContent(testData.food)
-  expect(getByLabelText(/drink/i)).toHaveTextContent(testData.drink)
+  expect(await findByLabelText(/food/i)).toHaveTextContent(testData.food)
+  expect(await findByLabelText(/drink/i)).toHaveTextContent(testData.drink)
 
-  fireEvent.click(getByText(/confirm/i, {selector: 'button'}))
+  fireEvent.click(await findByText(/confirm/i, {selector: 'button'}))
 
   expect(mockSubmitForm).toHaveBeenCalledWith(testData)
   expect(mockSubmitForm).toHaveBeenCalledTimes(1)
   fireEvent.click(await findByText(/home/i))
 
-  expect(getByText(/welcome home/i)).toBeInTheDocument()
+  expect(await findByText(/welcome home/i)).toBeInTheDocument()
 })
